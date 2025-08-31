@@ -32,6 +32,30 @@
         ],
         "default": "indoor"
       },
+      "filterSection": {
+        "component": "filterBar",
+        "layout": "horizontal",
+        "elements": {
+          "filterButton": {
+            "component": "filterToggle",
+            "label": "Filters",
+            "icon": "filter",
+            "badge": {
+              "visible": "when_filters_applied",
+              "count": 0
+            },
+            "action": "openFilterModal"
+          },
+          "activeFilters": {
+            "component": "horizontalScrollList",
+            "visible": "when_filters_applied",
+            "items": [],
+            "itemComponent": "filterChip",
+            "actions": ["removeFilter"],
+            "scrollBehavior": "infinite"
+          }
+        }
+      },
       "mainSection": {
         "emptyState": {
           "visible": "when_no_items",
@@ -60,6 +84,12 @@
           "component": "clothingGrid",
           "filterBy": "available_items_only",
           "groupBy": "clothing_types",
+          "itemMetadata": {
+            "showWearCount": true,
+            "wearCountPeriod": "last_30_days",
+            "showLastWorn": true,
+            "lastWornFormat": "relative"
+          },
           "sections": [
             {
               "type": "tops",
