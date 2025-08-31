@@ -1,0 +1,377 @@
+{
+  "newUserFlow": {
+    "trigger": {
+      "conditions": [
+        "app_first_launch",
+        "no_local_profiles_exist",
+        "manual_add_profile_when_empty"
+      ]
+    },
+    "screens": {
+      "welcomeScreen": {
+        "id": "welcome",
+        "layout": {
+          "header": {
+            "component": "appLogo",
+            "centered": true
+          },
+          "title": {
+            "primary": "Welcome to Carousel",
+            "secondary": "Your Personal Wardrobe Manager"
+          },
+          "content": {
+            "question": "Do you already use Carousel?",
+            "actions": [
+              {
+                "id": "firstTime",
+                "label": "📱 This is my first time",
+                "style": "primary",
+                "action": "navigateToProfileCreation"
+              },
+              {
+                "id": "restore",
+                "label": "☁️ Restore my data",
+                "style": "secondary", 
+                "action": "navigateToBackupRestore"
+              }
+            ]
+          }
+        },
+        "navigation": {
+          "next": {
+            "firstTime": "profileCreation",
+            "restore": "backupRestore"
+          }
+        }
+      },
+      "profileCreation": {
+        "id": "profileCreation",
+        "layout": {
+          "title": "Set Up Your Profile",
+          "form": {
+            "photoSection": {
+              "component": "profilePhotoSelector",
+              "placeholder": "👤",
+              "shape": "circle",
+              "actions": [
+                {
+                  "id": "takePhoto",
+                  "label": "Take Photo",
+                  "action": "openCamera"
+                },
+                {
+                  "id": "chooseLibrary", 
+                  "label": "Choose from Library",
+                  "action": "openPhotoLibrary"
+                },
+                {
+                  "id": "useInitials",
+                  "label": "Use Initials", 
+                  "action": "generateInitialsAvatar"
+                },
+                {
+                  "id": "skipPhoto",
+                  "label": "Skip Photo",
+                  "action": "useDefaultAvatar"
+                }
+              ]
+            },
+            "fields": [
+              {
+                "id": "name",
+                "label": "Name",
+                "type": "text",
+                "required": true,
+                "placeholder": "Enter your name",
+                "validation": {
+                  "minLength": 1
+                }
+              },
+              {
+                "id": "relationship",
+                "label": "Relationship",
+                "type": "select",
+                "value": "self",
+                "disabled": true,
+                "options": [
+                  {
+                    "value": "self",
+                    "label": "Self"
+                  }
+                ]
+              }
+            ],
+            "actions": {
+              "primary": {
+                "label": "Create My Profile",
+                "action": "createProfile",
+                "style": "primary"
+              }
+            }
+          },
+          "footer": {
+            "helperText": "You can add family members later"
+          }
+        },
+        "navigation": {
+          "next": "homeScreen"
+        }
+      },
+      "backupRestore": {
+        "id": "backupRestore",
+        "layout": {
+          "title": "Restore Your Wardrobe",
+          "content": {
+            "description": "We'll restore your profiles, clothing, and outfit history",
+            "primaryOption": {
+              "component": "actionButton",
+              "label": "🔐 Connect to Google Drive",
+              "action": "authenticateGoogleDrive",
+              "style": "primary"
+            },
+            "alternativeSection": {
+              "label": "Or restore from file:",
+              "component": "actionButton", 
+              "buttonLabel": "📁 Choose backup file",
+              "action": "openFilePicker",
+              "style": "secondary"
+            }
+          },
+          "footer": {
+            "actions": [
+              {
+                "id": "back",
+                "label": "← Back",
+                "action": "navigateToWelcome",
+                "style": "text"
+              },
+              {
+                "id": "skip",
+                "label": "Skip - Start Fresh", 
+                "action": "navigateToProfileCreation",
+                "style": "text"
+              }
+            ]
+          }
+        },
+        "navigation": {
+          "next": {
+            "googleDrive": "googleAuth",
+            "fileSelection": "restoreProcess",
+            "back": "welcome",
+            "skip": "profileCreation"
+          }
+        }
+      },
+      "googleAuth": {
+        "id": "googleAuth",
+        "type": "modal",
+        "process": {
+          "steps": [
+            "launchGoogleOAuth",
+            "requestDrivePermissions"
+          ],
+          "onSuccess": "backupFileSelection",
+          "onFailure": "backupRestore"
+        }
+      },
+      "backupFileSelection": {
+        "id": "backupFileSelection",
+        "layout": {
+          "title": "Choose Backup File",
+          "content": {
+            "section": {
+              "label": "Found backups in your Drive:",
+              "component": "fileList",
+              "selectionType": "single",
+              "files": [
+                {
+                  "filename": "Carousel_2025-08-30.backup",
+                  "lastModified": "Yesterday 11:47 PM",
+                  "selectable": true
+                },
+                {
+                  "filename": "Carousel_2025-08-25.backup", 
+                  "lastModified": "5 days ago",
+                  "selectable": true
+                }
+              ]
+            },
+            "actions": {
+              "primary": {
+                "label": "Restore Selected Backup",
+                "action": "restoreFromSelected",
+                "style": "primary",
+                "enabled": "when_file_selected"
+              }
+            }
+          },
+          "footer": {
+            "actions": [
+              {
+                "id": "back",
+                "label": "← Back", 
+                "action": "navigateToBackupRestore",
+                "style": "text"
+              }
+            ]
+          }
+        },
+        "navigation": {
+          "next": "restoreProcess"
+        }
+      },
+      "restoreProcess": {
+        "id": "restoreProcess",
+        "layout": {
+          "title": "Restoring Your Data...",
+          "content": {
+            "progressBar": {
+              "component": "progressIndicator",
+              "animated": true,
+              "showPercentage": true
+            },
+            "stepsList": {
+              "component": "processSteps",
+              "steps": [
+                {
+                  "id": "profiles",
+                  "label": "Profiles restored",
+                  "status": "completed",
+                  "icon": "✓"
+                },
+                {
+                  "id": "clothing",
+                  "label": "Clothing items restored", 
+                  "status": "completed",
+                  "icon": "✓"
+                },
+                {
+                  "id": "images",
+                  "label": "Processing images...",
+                  "status": "inProgress", 
+                  "icon": "⏳"
+                },
+                {
+                  "id": "history",
+                  "label": "Restoring outfit history...",
+                  "status": "pending",
+                  "icon": "⏳"
+                }
+              ]
+            },
+            "footer": {
+              "helperText": "This may take a few minutes"
+            }
+          }
+        },
+        "process": {
+          "steps": [
+            "downloadAndDecryptBackup",
+            "validateBackupIntegrity", 
+            "restoreDatabaseRecords",
+            "extractAndSaveImages",
+            "updateProgressIndicators"
+          ],
+          "onComplete": "restoreSuccess",
+          "onError": "restoreError"
+        }
+      },
+      "restoreSuccess": {
+        "id": "restoreSuccess",
+        "navigation": {
+          "next": "homeScreen",
+          "immediate": true
+        }
+      }
+    },
+    "errorStates": {
+      "noBackupsFound": {
+        "title": "No Backups Found",
+        "message": "We couldn't find any Carousel backups in your Google Drive",
+        "actions": [
+          {
+            "label": "Try Different Account",
+            "action": "authenticateGoogleDrive"
+          },
+          {
+            "label": "Choose File Manually", 
+            "action": "openFilePicker"
+          },
+          {
+            "label": "Start Fresh Instead",
+            "action": "navigateToProfileCreation"
+          }
+        ]
+      },
+      "authenticationFailed": {
+        "title": "Connection Failed",
+        "message": "Couldn't connect to Google Drive. Please check your internet connection and try again",
+        "actions": [
+          {
+            "label": "Try Again",
+            "action": "authenticateGoogleDrive"
+          },
+          {
+            "label": "Choose File Manually",
+            "action": "openFilePicker" 
+          },
+          {
+            "label": "Start Fresh Instead",
+            "action": "navigateToProfileCreation"
+          }
+        ]
+      },
+      "corruptBackup": {
+        "title": "Invalid Backup File",
+        "message": "This backup file couldn't be read. It may be corrupted or from an incompatible version",
+        "actions": [
+          {
+            "label": "Try Different File",
+            "action": "openFilePicker"
+          },
+          {
+            "label": "Contact Support", 
+            "action": "openSupportContact"
+          },
+          {
+            "label": "Start Fresh Instead",
+            "action": "navigateToProfileCreation"
+          }
+        ]
+      }
+    },
+    "completion": {
+      "pathA": {
+        "destination": "homeScreen",
+        "description": "Navigate to home screen where wardrobe onboarding can begin"
+      },
+      "pathB": {
+        "destination": "homeScreen", 
+        "description": "Navigate directly to home screen with restored wardrobe"
+      }
+    },
+    "technicalRequirements": {
+      "validation": [
+        "validateBackupFileFormat",
+        "checkAppVersionCompatibility", 
+        "verifyDataIntegrity"
+      ],
+      "performance": [
+        "showProgressIndicators",
+        "handleLargeImageCollections",
+        "provideCancelOption"
+      ],
+      "privacy": [
+        "encryptBackupFiles",
+        "clearTemporaryFiles",
+        "handleGoogleDrivePermissions"
+      ],
+      "offline": [
+        "detectNetworkConnectivity",
+        "provideAppropriateErrorMessages", 
+        "fallbackToManualFileSelection"
+      ]
+    }
+  }
+}

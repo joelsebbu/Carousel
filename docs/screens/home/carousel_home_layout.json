@@ -1,0 +1,163 @@
+{
+  "app": {
+    "layout": {
+      "topBar": {
+        "left": {
+          "component": "hamburger",
+          "action": "openSideMenu"
+        },
+        "center": {
+          "component": "appName",
+          "content": "Carousel"
+        },
+        "right": {
+          "component": "profileSwitcher",
+          "type": "dropdown",
+          "format": "👤 Name ▼"
+        }
+      },
+      "contextTabs": {
+        "component": "segmentedControl",
+        "options": [
+          {
+            "id": "indoor",
+            "label": "Indoor",
+            "active": true
+          },
+          {
+            "id": "outdoor",
+            "label": "Outdoor", 
+            "active": false
+          }
+        ],
+        "default": "indoor"
+      },
+      "mainSection": {
+        "emptyState": {
+          "visible": "when_no_items",
+          "component": "onboardingPrompt",
+          "title": "Your Wardrobe is Empty",
+          "subtitle": "Add your first clothing item to get started",
+          "cta": {
+            "label": "Add Clothing Item",
+            "action": "openWardrobe"
+          },
+          "tips": [
+            "Start with everyday basics",
+            "Add 5-10 items to begin",
+            "You can always add more later"
+          ]
+        },
+        "currentOutfit": {
+          "visible": "when_items_worn_today",
+          "component": "todaysOutfit",
+          "title": "Currently Wearing",
+          "priority": 1,
+          "showItems": true,
+          "actions": ["editOutfit"]
+        },
+        "availableClothes": {
+          "component": "clothingGrid",
+          "filterBy": "available_items_only",
+          "groupBy": "clothing_types",
+          "sections": [
+            {
+              "type": "tops",
+              "label": "Tops",
+              "items": []
+            },
+            {
+              "type": "bottoms",
+              "label": "Bottoms", 
+              "items": []
+            },
+            {
+              "type": "outerwear",
+              "label": "Outerwear",
+              "items": []
+            },
+            {
+              "type": "footwear",
+              "label": "Footwear",
+              "items": []
+            },
+            {
+              "type": "accessories",
+              "label": "Accessories",
+              "items": []
+            },
+            {
+              "type": "underwear",
+              "label": "Underwear",
+              "items": []
+            }
+          ],
+          "showCounts": true,
+          "purpose": "show_what_i_can_wear_today"
+        }
+      },
+      "floatingAction": {
+        "component": "singleActionButton",
+        "label": "I'm Wearing This",
+        "action": "takeOutfitPhoto",
+        "position": "bottom-right",
+        "icon": "camera"
+      },
+      "sideMenu": {
+        "component": "slideDrawer",
+        "header": {
+          "appName": "Carousel",
+          "version": "1.0.0"
+        },
+        "sections": [
+          {
+            "id": "wardrobe",
+            "label": "Wardrobe",
+            "icon": "closet",
+            "action": "openWardrobe",
+            "description": "Add & organize clothes"
+          },
+          {
+            "id": "manage",
+            "label": "Rack & Laundry",
+            "icon": "organize",
+            "action": "manageStates",
+            "description": "Sort worn items"
+          },
+          {
+            "id": "travel",
+            "label": "Travel",
+            "icon": "suitcase",
+            "action": "travelMode",
+            "description": "Pack & unpack items"
+          },
+          {
+            "id": "history",
+            "label": "History",
+            "icon": "calendar",
+            "action": "viewOutfitLogs",
+            "description": "Past outfits & stats"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "appSettings",
+            "description": "App preferences"
+          }
+        ]
+      },
+      "bottomNavigation": null
+    },
+    "behavior": {
+      "homeScreenPurpose": "daily_outfit_decision",
+      "primaryWorkflow": [
+        "view_available_clothes",
+        "make_outfit_choice", 
+        "log_what_wearing",
+        "end_day_sorting"
+      ],
+      "managementWorkflows": "hamburger_menu_only"
+    }
+  }
+}
